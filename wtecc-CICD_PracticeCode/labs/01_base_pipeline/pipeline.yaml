@@ -12,3 +12,30 @@ spec:
       params:
         - name: message
           value: "$(params.message)"
+
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: cd-pipeline
+spec:
+  params:
+    - name: repo-url
+    - name: branch
+      default: "master"
+  tasks:
+    - name: clone
+      taskRef:
+        name: checkout
+      params:
+      - name: repo-url
+        value: "$(params.repo-url)"
+      - name: branch
+        value: "$(params.branch)"
+
+
+#    Running the cd-pipeline
+# By default, the cloned repo exists inside the Pod and is deleted after execution.
+#To persist it, you need to use a Tekton workspace with a Persistent Volume Claim (PVC).
+#This allows other tasks in the pipeline to use the cloned repository. 🚀
